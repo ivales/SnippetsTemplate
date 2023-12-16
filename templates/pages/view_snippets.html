@@ -53,7 +53,7 @@
                     {%for snippet in snippets%}
                     <tr>
                         <td scope="row">{{snippet.id}}</td>
-                        <td><a href="/snippets/1">{{snippet.name}}</a></td>
+                        <td><a href="/snippet/{{snippet.id}}">{{snippet.name}}</a></td>
                         <td>{{snippet.creation_date|date:"d M Y"}} {{snippet.creation_date|time:"H:i:s"}}</td>
                     </tr>
 

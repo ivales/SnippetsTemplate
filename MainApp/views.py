@@ -16,3 +16,10 @@ def add_snippet_page(request):
 def snippets_page(request):
     context = {'snippets': Snippet.objects.values(), 'count': len(Snippet.objects.values())}
     return render(request, 'pages/view_snippets.html', context)
+
+def snippet(request, id):
+    for snippet in Snippet.objects.values():
+        if snippet['id'] == id:
+            lonely_snippet = snippet
+    context = {"snippet": lonely_snippet}
+    return render(request, 'pages/snippet.html', context)
