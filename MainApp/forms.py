@@ -12,5 +12,5 @@ class SnippetForm(ModelForm):
            'code': TextInput(attrs={"class": "form-control form-control-lg", 'placeholder': 'Код сниппета'}),
        }
        labels = {
-           'name': '', 'code':''
+           'name': '', 'lang':'', 'code':''
        }

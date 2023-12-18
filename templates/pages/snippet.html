@@ -2,7 +2,11 @@
 {% load static %}
 {% block content %}
 <main role="main" class="mt-5 flex-shrink-0">
-<fieldset disabled>
+    {% if method == POST %}
+        <fieldset>
+    {% else %}
+        <fieldset disabled>
+    {% endif %}
    <div class="row disabled">
        <div class="col col-8">
            Название: <input type="text" value='{{snippet.name}}' class="form-control">
@@ -16,13 +20,28 @@
        <div class="col">
            <div class="p-2 h-100" style="border:1px solid #ced4da; border-radius:5px;">
                <p>
-                   {{snippet.code}}
+                   Код: <input type="text" value='{{snippet.code}}' class="form-control">
                </p>
 
            </div>
 
        </div>
    </div>
+   {% if method == POST %}
+            {{method}}
+   <div class="row">
+        <div class="col">
+            <form action="{%url 'snippet_update' snippet.id snippet.name snippet.code %}" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <div class="col-8">
+                        <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+       {% endif %}
 </fieldset>
 </main>
-{% endblock %}}
+{% endblock %}
