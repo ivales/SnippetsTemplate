@@ -30,7 +30,8 @@ def snippet(request, id):
     for snippet in Snippet.objects.values():
         if snippet['id'] == id:
            lonely_snippet = snippet
-           context = {"snippet": lonely_snippet, "method": request.method}
+           form = SnippetForm(initial={'name':lonely_snippet['name'], 'lang':lonely_snippet['lang'], 'code':lonely_snippet['code']})
+           context = {"id":id,"form": form, "method": request.method}
            return render(request, 'pages/snippet.html', context)
 
 
@@ -39,9 +40,12 @@ def snippet_delete(request, id):
     snippet.delete()
     return redirect("/snippets/list")
 
-def snippet_update(request, id, name, code):
-    snippet = get_object_or_404(Snippet, id=id)
-    snippet.name = name
-    snippet_code = code
-    snippet.save()
-    return redirect("/snippets/list")
+def snippet_update(request, id):
+    form = SnippetForm(request.POST)
+    if form.is_valid():
+        snippet = get_object_or_404(Snippet, id=id)
+        snippet.name = form.cleaned_data.get("name")
+        snippet.lang = form.cleaned_data.get("lang")
+        snippet.code = form.cleaned_data.get("code")
+        snippet.save()
+        return redirect("snippets_list")

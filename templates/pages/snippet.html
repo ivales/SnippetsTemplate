@@ -2,36 +2,20 @@
 {% load static %}
 {% block content %}
 <main role="main" class="mt-5 flex-shrink-0">
-    {% if method == POST %}
+    {% if method == "POST" %}
         <fieldset>
     {% else %}
         <fieldset disabled>
+        &nbsp id: <b>  {{id}}</b>
+        {{form.as_p}}
     {% endif %}
-   <div class="row disabled">
-       <div class="col col-8">
-           Название: <input type="text" value='{{snippet.name}}' class="form-control">
-       </div>
-       <div class="col col-4">
-           Дата создания:<input type="text" value='{{snippet.creation_date|date:"d M Y"}} {{snippet.creation_date|time:"H:i:s"}}' class="form-control">
-       </div>
-   </div>
-   <hr>
-   <div class="row">
-       <div class="col">
-           <div class="p-2 h-100" style="border:1px solid #ced4da; border-radius:5px;">
-               <p>
-                   Код: <input type="text" value='{{snippet.code}}' class="form-control">
-               </p>
-
-           </div>
-
-       </div>
-   </div>
-   {% if method == POST %}
+   {% if method == "POST" %}
    <div class="row">
         <div class="col">
-            <form action="{%url 'snippet_update' snippet.id snippet.name snippet.code %}" method="post">
+            <form action="{%url 'snippet_update' id%}" method="post">
                 {% csrf_token %}
+                &nbsp id: <b>  {{id}}</b>
+                {{form.as_p}}
                 <div class="form-group row">
                     <div class="col-8">
                         <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
