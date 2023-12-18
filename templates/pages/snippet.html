@@ -28,7 +28,6 @@
        </div>
    </div>
    {% if method == POST %}
-            {{method}}
    <div class="row">
         <div class="col">
             <form action="{%url 'snippet_update' snippet.id snippet.name snippet.code %}" method="post">
