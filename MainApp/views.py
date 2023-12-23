@@ -17,13 +17,16 @@ def add_snippet_page(request):
     if request.method == "POST":
         form = SnippetForm(request.POST)
         if form.is_valid():
-            form.save()
+            snippet = form.save(commit=False)
+            if request.user.is_authenticated:
+                snippet.user = request.user
+                snippet.save()
             return redirect("snippets_list")
         return render(request, 'add_snippet.html', {'form': form})
 
 
 def snippets_page(request):
-    context = {'snippets': Snippet.objects.values(), 'count': len(Snippet.objects.values())}
+    context = {'snippets': Snippet.objects.all(), 'count': len(Snippet.objects.values())}
     return render(request, 'pages/view_snippets.html', context)
 
 
@@ -31,8 +34,8 @@ def snippet(request, id):
     for snippet in Snippet.objects.values():
         if snippet['id'] == id:
            lonely_snippet = snippet
-           form = SnippetForm(initial={'name':lonely_snippet['name'], 'lang':lonely_snippet['lang'], 'code':lonely_snippet['code']})
-           context = {"id":id,"form": form, "method": request.method}
+           form = SnippetForm(initial={'name': lonely_snippet['name'], 'lang': lonely_snippet['lang'], 'code': lonely_snippet['code']})
+           context = {"id": id, "form": form, "method": request.method}
            return render(request, 'pages/snippet.html', context)
 
 
