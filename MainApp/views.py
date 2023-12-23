@@ -94,6 +94,6 @@ def create_user(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save(commit=False)
+            form.save()
             return redirect("home")
         return render(request, 'pages/registration.html', {'form': form})
