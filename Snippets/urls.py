@@ -12,6 +12,7 @@ urlpatterns = [
     path('snippet/delete/<int:id>', views.snippet_delete, name='snippet_delete'),
     path('snippet/update/<int:id>', views.snippet_update, name='snippet_update'),
     path('login', views.login, name='login'),
-    path('logout', views.logout, name='logout')
+    path('logout', views.logout, name='logout'),
+    path ('auth/register', views.create_user, name='register')
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -71,8 +71,8 @@
                             </form>
                             {% endif %}
                         </td>
+                        <td> {% if snippet.public %} Public {% else %} Private {% endif %} </td>
                         <td> {{ snippet.user.username }} </td>
-                        <td> {% if snippet public %} Public {% else %} Private {% endif %} </td>
                     </tr>
 
                     {% endfor %}
