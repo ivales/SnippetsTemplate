@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from MainApp.models import Snippet
 from MainApp.forms import SnippetForm
 from django.contrib import auth
-
+from django.contrib.auth.decorators import login_required
 
 def index_page(request):
     context = {'pagename': 'PythonBin'}
     return render(request, 'pages/index.html', context)
 
 
+@login_required
 def add_snippet_page(request):
     if request.method == "GET":
         form = SnippetForm()
@@ -26,7 +27,13 @@ def add_snippet_page(request):
 
 
 def snippets_page(request):
-    context = {'snippets': Snippet.objects.all(), 'count': len(Snippet.objects.values())}
+    context = {'snippets': Snippet.objects.filter(public=True), 'count': len(Snippet.objects.filter(public=True))}
+    return render(request, 'pages/view_snippets.html', context)
+
+
+@login_required
+def snippets_user(request):
+    context = {'snippets': Snippet.objects.filter(user__username=request.user), 'count': len(Snippet.objects.filter(user__username=request.user))}
     return render(request, 'pages/view_snippets.html', context)
 
 
@@ -39,9 +46,11 @@ def snippet(request, id):
            return render(request, 'pages/snippet.html', context)
 
 
+@login_required
 def snippet_delete(request, id):
     snippet = get_object_or_404(Snippet, id=id)
-    snippet.delete()
+    if snippet['user'].username == request.user:
+        snippet.delete()
     return redirect("/snippets/list")
 
 def snippet_update(request, id):
@@ -69,6 +78,9 @@ def login(request):
        if user is not None:
            auth.login(request, user)
        else:
-           # Return error message
-           pass
+           context = {
+               'pagename': 'PythpnBin',
+               'errors': ["wrong username or password"]
+           }
+           return render(request, 'pages/index.html', context)
    return redirect('home')

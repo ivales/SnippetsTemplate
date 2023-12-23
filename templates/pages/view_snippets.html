@@ -48,28 +48,33 @@
                         <th scope="col">Название</th>
                         <th scope="col">Дата создания</th>
                         <th scope="col">Действия</th>
+                        <th scope="col">Статус</th>
                         <th scope="col">Пользователь</th>
 
                     </tr>
                     </thead>
                     <tbody>
                     {% for snippet in snippets %}
-                    {% if snippet.public %}
+
                     <tr>
                         <td scope="row">{{snippet.id}}</td>
                         <td><a href="/snippet/{{snippet.id}}">{{snippet.name}}</a></td>
                         <td>{{snippet.creation_date|date:"d M Y"}} {{snippet.creation_date|time:"H:i:s"}}</td>
-                        <td><form action="{%url 'snippet' snippet.id %}" method="post">
+                        <td>
+                            {% if user.username == snippet.user.username %}
+                            <form action="{%url 'snippet' snippet.id %}" method="post">
                             {% csrf_token %}
                             <button><img src="{% static 'images/edit.png' %}" width="16" height="16" alt=""></button>
                             </form>
                             <form action="{%url 'snippet_delete' snippet.id %}" method="get">
                                 <button><i class="fa-solid fa-trash-can fa"></i></button>
                             </form>
+                            {% endif %}
                         </td>
                         <td> {{ snippet.user.username }} </td>
+                        <td> {% if snippet public %} Public {% else %} Private {% endif %} </td>
                     </tr>
-                    {% endif %}
+
                     {% endfor %}
                     </tbody>
                 </table>
