@@ -26,5 +26,23 @@
         </div>
        {% endif %}
 </fieldset>
+   <table border="1">
+   <tr>
+       <th>Автор</th>
+       <th>Комментарий</th>
+   </tr>
+   {% for comment in comments %}
+   <tr>
+       <td>{{comment.author.username}}</td>
+       <td>{{comment.text}}</td>
+   </tr>
+   {% endfor %}
+   </table>
+   <form action="{% url 'comment_add'%}" method="POST">
+        {% csrf_token %}
+       <span class="d-none"> {{comment_form.snippet}} </span>
+        {{comment_form.text}}
+        <button type="submit">Добавить</button>
+    </form>
 </main>
 {% endblock %}
