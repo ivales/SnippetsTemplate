@@ -30,7 +30,11 @@ def add_snippet_page(request):
 
 
 def snippets_page(request):
-    context = {'snippets': Snippet.objects.filter(public=True), 'count': Snippet.objects.filter(public=True).count()}
+    snippets = Snippet.objects.filter(public=True).order_by("name")
+    lang = request.GET.get("lang")
+    if lang:
+        snippets = Snippet.objects.filter(lang=lang)
+    context = {'snippets': snippets, 'count': Snippet.objects.filter(public=True).count()}
     return render(request, 'pages/view_snippets.html', context)
 
 

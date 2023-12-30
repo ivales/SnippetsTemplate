@@ -1,5 +1,6 @@
 {% extends '../base.html'%}
 {% load static %}
+{% load my_tags %}
     {% block style %}
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -34,11 +35,29 @@
 
         <div class="row">
             <div class="col">
+                <form action="" method="get">
+                    <select name="lang">
+                        <option {% if lang == "py" %} selected {% endif%} value="py">Python</option>
+                        <option {% if lang == "cpp" %} selected {% endif%} value="cpp">C++</option>
+                        <option {% if lang == "js" %} selected {% endif%} value="js">Javascript</option>
+                    </select>
+                    <button type="submit">Применить</button>
+                </form>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col">
                 <table class="table table-striped">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Название</th>
+                        <th scope="col">Язык</th>
                         <th scope="col">Дата создания</th>
                         <th scope="col">Действия</th>
                         <th scope="col">Статус</th>
@@ -51,7 +70,8 @@
 
                     <tr>
                         <td scope="row">{{snippet.id}}</td>
-                        <td><a href="/snippet/{{snippet.id}}">{{snippet.name}}</a></td>
+                        <td><a href="/snippet/{{snippet.id}}">{{snippet.name}}</a>
+                        <td scope="row">{{snippet.lang}}</td>
                         <td>{{snippet.creation_date|date:"d M Y"}} {{snippet.creation_date|time:"H:i:s"}}</td>
                         <td>
                             {% if user.username == snippet.user.username %}
@@ -65,7 +85,7 @@
                             {% endif %}
                         </td>
                         <td> {% if snippet.public %} Public {% else %} Private {% endif %} </td>
-                        <td> {{ snippet.user.username }} </td>
+                        <td> {{ snippet.user.username|is_empty:'Аноним' }} </td>
                     </tr>
 
                     {% endfor %}
