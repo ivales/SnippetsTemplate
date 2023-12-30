@@ -46,7 +46,7 @@ def snippet(request, id):
            lonely_snippet = snippet
            form = SnippetForm(initial={'name': lonely_snippet['name'], 'lang': lonely_snippet['lang'], 'code': lonely_snippet['code']})
            comment_form = CommentForm(initial={'snippet': Snippet.objects.get(pk=id)})
-           context = {"id": id, "form": form, "method": request.method, "comment_form": comment_form, "comments":Comment.objects.filter(snippet__id=id)}
+           context = {"id": id, "form": form, "method": request.method, "comment_form": comment_form, "comments":Comment.objects.filter(snippet__id=id), 'snippet': lonely_snippet}
            return render(request, 'pages/snippet.html', context)
 
 
@@ -120,3 +120,21 @@ def comment_add(request):
        return redirect(f'/snippet/{comment.snippet.id}')
 
    raise Http404
+
+
+@login_required
+def comment_delete(request, id):
+    if request.method == "POST":
+        comment = get_object_or_404(Comment, id=id)
+        comment.delete()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def comment_update(request, id):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = get_object_or_404(Comment, id=id)
+        comment.text = form.cleaned_data.get("text")
+        comment.save()
+        return redirect(request.META.get('HTTP_REFERER'))

@@ -1,3 +1,4 @@
 venv/
-MainApp/__pycache__/
-Snippets/__pycache__/
+__pycache__/
+*db*
+.idea/

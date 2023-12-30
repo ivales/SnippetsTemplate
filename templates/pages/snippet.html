@@ -1,21 +1,42 @@
 {% extends '../base.html'%}
 {% load static %}
+{% load pygmentify_tags %}
+{%block style%}
+    {{block.super}}
+<link rel="stylesheet" href="{% pygmentify_css %}">
+{% endblock style %}
+
 {% block content %}
-<main role="main" class="mt-5 flex-shrink-1">
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <h1>{{ pagename }}</h1>
+            <hr>
+        </div>
+    </div>
     {% if method == "POST" %}
         <fieldset>
     {% else %}
         <fieldset disabled>
-        &nbsp id: <b>  {{id}}</b>
-        {{form.as_p}}
+            {{form.name}}
+            {{form.lang}}
+            {% pygmentify %}
+            <pre class="python">
+            {{snippet.code}}
+            </pre>
+            {% endpygmentify %}
     {% endif %}
    {% if method == "POST" %}
    <div class="row">
         <div class="col">
             <form action="{%url 'snippet_update' id%}" method="post">
                 {% csrf_token %}
-                &nbsp id: <b>  {{id}}</b>
+                &nbsp id: <b>  {{id}}
+                {% pygmentify %}
+                    <pre class="python">
                 {{form.as_p}}
+                    </pre>
+                {% endpygmentify %}
                 <div class="form-group row">
                     <div class="col-8">
                         <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
@@ -25,24 +46,44 @@
         </div>
         </div>
        {% endif %}
-</fieldset>
-   <table border="1">
-   <tr>
-       <th>Автор</th>
-       <th>Комментарий</th>
-   </tr>
-   {% for comment in comments %}
-   <tr>
-       <td>{{comment.author.username}}</td>
-       <td>{{comment.text}}</td>
-   </tr>
-   {% endfor %}
-   </table>
+        </fieldset>
+            <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Автор</th>
+                        <th scope="col">Комментарий</th>
+                        <th scope="col">Дата создания</th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for comment in comments %}
+
+                    <tr>
+                        <td scope="row">{{comment.author.username}}</td>
+                        <td>{{comment.text}}</td>
+                        <td>{{comment.creation_date|date:"d M Y"}} {{snippet.creation_date|time:"H:i:s"}}</td>
+                        <td>
+                            {% if user.username == comment.author.username %}
+                            <form action="{%url 'comment_update' comment.id %}" method="post">
+                            {% csrf_token %}
+                            <button><img src="{% static 'images/edit.png' %}" width="16" height="16" alt=""></button>
+                            </form>
+                            <form action="{%url 'comment_delete' comment.id %}" method="POST">
+                                {% csrf_token %}
+                                <button><i class="fa-solid fa-trash-can fa"></i></button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
    <form action="{% url 'comment_add'%}" method="POST">
         {% csrf_token %}
        <span class="d-none"> {{comment_form.snippet}} </span>
         {{comment_form.text}}
         <button type="submit">Добавить</button>
     </form>
-</main>
 {% endblock %}
